@@ -42,13 +42,12 @@ config();
  */
 
 /**
- * ハイフンを削除し、16進数のバッファに変換
+ * ハイフンを削除し、文字列として結合
  * @param {string} input - ハイフン区切りの文字列
- * @returns {Buffer} - 16進数のバッファ
+ * @returns {string} - ハイフンを削除した文字列
  */
 function parseCode(input) {
-  const hex = input.replace(/-/g, '');
-  return Buffer.from(hex, 'hex');
+  return input.replace(/-/g, '');
 }
 
 /**
@@ -60,19 +59,15 @@ function parseCode(input) {
  * @returns {Buffer} - OTP シークレット（バッファ）
  */
 function generateOtpSecret(serial, activationCode, registrationCode, policy = '') {
-  const serialBuf = parseCode(serial);
-  const activationBuf = parseCode(activationCode);
-  const registrationBuf = parseCode(registrationCode);
-  const policyBuf = Buffer.from(policy, 'utf8');
-
-  // データを結合
-  const data = Buffer.concat([serialBuf, activationBuf, registrationBuf, policyBuf]);
-
-  // SHA-256 ハッシュを計算
+  // それぞれハイフン除去→バッファ化
+  const serialBuf = Buffer.from(parseCode(serial));
+  const activationBuf = Buffer.from(parseCode(activationCode));
+  const registrationBuf = Buffer.from(parseCode(registrationCode));
+  // バッファ連結
+  const data = Buffer.concat([serialBuf, activationBuf, registrationBuf]);
+  // SHA-256
   const hash = crypto.createHash('sha256').update(data).digest();
-
-  // 最初の16バイトを OTP シークレットとして使用
-  return hash.slice(0, 16);
+  return hash.subarray(0, 16);
 }
 
 /**
@@ -90,8 +85,7 @@ function generateOtpauthUri(issuer, accountName, secretBuffer, algorithm = 'SHA2
   const secret = base32Encode(secretBuffer, 'RFC4648', { padding: false });
 
   // ラベルのエンコード（issuer:accountName）
-  // const label = encodeURIComponent(`${issuer}:${accountName}`);
-  const label = encodeURIComponent(`${issuer}`);
+  const label = encodeURIComponent(`${issuer}:${accountName}`);
 
   // パラメータのエンコード
   const params = new URLSearchParams({
