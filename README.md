@@ -1,22 +1,56 @@
 # Entrust IdentityGuard TOTP認証URI生成ツール
 
-Entrust IdentityGuardのソフトトークンから、Google AuthenticatorやAuthy等で使用可能なTOTP（Time-based One-Time Password）認証URIを生成するNode.jsツールです。
+Entrust IdentityGuardのソフトトークンから、Google AuthenticatorやAuthy等で使用可能なTOTP（Time-based One-Time Password）認証URIを生成するツールです。
 
 ## 特徴
 
 - Entrust IdentityGuardの公式仕様に準拠
 - PBKDF2キー導出関数を使用したセキュアな実装
-- コマンドライン引数または環境変数での設定が可能
+- **Webブラウザ版**と**コマンドライン版**の両方を提供
+- すべての処理がクライアントサイドで実行（Webブラウザ版）
 - Google Authenticator、Authy等の主要TOTPアプリで動作確認済み
 
-## インストール
+## 使用方法
 
-### 前提条件
+### 🌐 Webブラウザ版（推奨）
+
+1. `index.html`をWebブラウザで開く：
+```bash
+# ローカルファイルとして開く
+open index.html
+# または
+firefox index.html
+# または
+chrome index.html
+```
+
+2. フォームに必要な情報を入力：
+   - シリアル番号
+   - アクティベーションコード
+   - 登録コード
+   - アカウント名
+   - 発行者名（オプション）
+
+3. 「TOTP URI を生成」ボタンをクリック
+
+4. 生成されたURIをコピーまたはQRコードでスキャン
+
+**特徴:**
+- ✅ サーバーに一切データを送信しない
+- ✅ すべての処理がブラウザ内で完結
+- ✅ QRコード生成機能付き
+- ✅ レスポンシブデザイン対応
+
+### 💻 コマンドライン版
+
+#### インストール
+
+##### 前提条件
 
 - Node.js 14.0.0以上
 - npm
 
-### セットアップ
+##### セットアップ
 
 1. リポジトリをクローン：
 ```bash
@@ -35,20 +69,20 @@ cp env.example.txt .env
 # .envファイルを編集して実際の値を設定
 ```
 
-## 使用方法
+#### 使用方法
 
-### コマンドライン引数での実行
+##### コマンドライン引数での実行
 
 ```bash
 node entrust-totp.js <serial> <activationCode> <registrationCode> <accountName> [issuer]
 ```
 
-#### 例：
+###### 例：
 ```bash
 node entrust-totp.js 12345-67890 1234-5678-9012-3456 98765-43210 user@example.com "MyCompany"
 ```
 
-### 環境変数での実行
+##### 環境変数での実行
 
 1. `.env`ファイルに必要な情報を設定：
 

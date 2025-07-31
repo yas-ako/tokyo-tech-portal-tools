@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrust IdentityGuard TOTP URI生成ツール</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #000;
+      background-color: #fff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .header {
+      background: #000;
+      color: #fff;
+      padding: 30px;
+      text-align: center;
+      border-bottom: 2px solid #000;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .ai-badge {
+      display: inline-block;
+      background: #fff;
+      color: #000;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 10px;
+      border: 2px solid #fff;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #000;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #000;
+      border-radius: 6px;
+      font-size: 16px;
+      background: #fff;
+      color: #000;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #333;
+      background: #f9f9f9;
+    }
+
+    .form-group input.required {
+      border-left: 4px solid #000;
+    }
+
+    .form-group input.optional {
+      border-left: 4px solid #666;
+    }
+
+    .required-mark {
+      color: #000;
+      font-weight: bold;
+    }
+
+    .generate-btn {
+      background: #000;
+      color: #fff;
+      border: 2px solid #000;
+      padding: 15px 30px;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s;
+    }
+
+    .generate-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    .generate-btn:disabled {
+      background: #666;
+      color: #ccc;
+      cursor: not-allowed;
+      border-color: #666;
+    }
+
+    .result-section {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border: 2px solid #000;
+      border-radius: 6px;
+      display: none;
+    }
+
+    .result-section.show {
+      display: block;
+    }
+
+    .result-section h3 {
+      color: #27ae60;
+      margin-bottom: 15px;
+    }
+
+    .uri-output {
+      background: #fff;
+      padding: 15px;
+      border: 2px solid #000;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      word-break: break-all;
+      margin-bottom: 15px;
+      color: #000;
+    }
+
+    .copy-btn {
+      background: #000;
+      color: #fff;
+      border: 2px solid #000;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .copy-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    .qr-code {
+      text-align: center;
+      margin-top: 20px;
+      padding: 20px;
+      border: 2px solid #000;
+      border-radius: 4px;
+    }
+
+    .qr-code canvas {
+      border: 2px solid #000;
+      border-radius: 4px;
+    }
+
+    .error-section {
+      margin-top: 20px;
+      padding: 15px;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 4px;
+      color: #000;
+      display: none;
+    }
+
+    .error-section.show {
+      display: block;
+    }
+
+    .security-notice {
+      margin-top: 30px;
+      padding: 20px;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 6px;
+    }
+
+    .security-notice h4 {
+      color: #000;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .security-notice ul {
+      margin-left: 20px;
+    }
+
+    .security-notice li {
+      margin-bottom: 5px;
+      color: #000;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 10px;
+        border-radius: 0;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .header {
+        padding: 20px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔐 Entrust IdentityGuard TOTP URI生成ツール</h1>
+      <p>シリアル番号、アクティベーションコード、登録コードから<br>Google Authenticator等で使用可能なTOTP認証URIを生成します</p>
+      <div class="ai-badge">🤖 AI生成ツール</div>
+    </div>
+
+    <div class="content">
+      <form id="totpForm" autocomplete="new-password" novalidate>
+        <div class="form-group">
+          <label for="serial">シリアル番号 <span class="required-mark">*</span></label>
+          <input type="text" id="serial" name="serial" class="required" placeholder="例: 12345-67890" required autocomplete="new-password" spellcheck="false">
+        </div>
+
+        <div class="form-group">
+          <label for="activationCode">アクティベーションコード <span class="required-mark">*</span></label>
+          <input type="text" id="activationCode" name="activationCode" class="required" placeholder="例: 1234-5678-9012-3456" required autocomplete="new-password" spellcheck="false">
+        </div>
+
+        <div class="form-group">
+          <label for="registrationCode">登録コード <span class="required-mark">*</span></label>
+          <input type="text" id="registrationCode" name="registrationCode" class="required" placeholder="例: 98765-43210" required autocomplete="new-password" spellcheck="false">
+        </div>
+
+        <div class="form-group">
+          <label for="accountName">アカウント名 <span class="required-mark">*</span></label>
+          <input type="text" id="accountName" name="accountName" class="required" placeholder="例: user@example.com" required autocomplete="new-password" spellcheck="false">
+        </div>
+
+        <div class="form-group">
+          <label for="issuer">発行者名（オプション）</label>
+          <input type="text" id="issuer" name="issuer" class="optional" placeholder="例: MyCompany（デフォルト: Entrust）" autocomplete="new-password" spellcheck="false">
+        </div>
+
+        <button type="submit" class="generate-btn">TOTP URI を生成</button>
+      </form>
+
+      <div class="error-section" id="errorSection">
+        <strong>エラー:</strong> <span id="errorMessage"></span>
+      </div>
+
+      <div class="result-section" id="resultSection">
+        <h3>✅ TOTP認証URI が生成されました</h3>
+        <div class="uri-output" id="uriOutput"></div>
+        <button type="button" class="copy-btn" id="copyBtn">📋 URIをコピー</button>
+        <button type="button" class="copy-btn" id="qrBtn" style="background: #3498db;">📱 QRコード表示</button>
+
+        <div class="qr-code" id="qrCode" style="display: none;">
+          <h4>QRコード</h4>
+          <p>スマートフォンのTOTPアプリでこのQRコードをスキャンしてください</p>
+          <canvas id="qrCanvas"></canvas>
+        </div>
+      </div>
+
+      <div class="security-notice">
+        <h4>🛡️ セキュリティ上の注意事項</h4>
+        <ul>
+          <li><strong>AI生成ツール:</strong> このツールはAIによって生成されました。使用前に動作を十分に確認してください</li>
+          <li>このツールはすべてブラウザ内で動作し、入力データは外部に送信されません</li>
+          <li>生成されたURIやQRコードは機密情報です。適切に管理してください</li>
+          <li>使用後はブラウザの履歴やキャッシュをクリアすることを推奨します</li>
+          <li>信頼できない環境では使用しないでください</li>
+          <li>本ツールの正確性について、使用者の責任で検証してください</li>
+        </ul>
+        <p style="margin-top: 15px; font-size: 14px; color: #666; text-align: center;">
+          🤖 This tool was generated by AI • AIによって生成されたツールです
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QRコード生成ライブラリ -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+  <!-- メインスクリプト -->
+  <script type="module" src="app.js"></script>
+</body>
+
+</html>

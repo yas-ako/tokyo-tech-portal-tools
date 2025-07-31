@@ -1,11 +1,12 @@
 {
   "name": "entrust-totp-generator",
   "version": "1.0.0",
-  "description": "Entrust IdentityGuard のソフトトークンから TOTP（Time-based One-Time Password）認証URIを生成するツール",
+  "description": "Entrust IdentityGuard のソフトトークンから TOTP（Time-based One-Time Password）認証URIを生成するツール。Webブラウザ版とコマンドライン版を提供。",
   "main": "entrust-totp.js",
   "type": "module",
   "scripts": {
     "start": "node entrust-totp.js",
+    "web": "echo 'index.htmlをブラウザで開いてください' && open index.html || xdg-open index.html || start index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -13,12 +14,22 @@
     "entrust",
     "otp",
     "2fa",
-    "authentication"
+    "authentication",
+    "browser",
+    "web",
+    "client-side"
   ],
   "author": "yas-ako",
   "license": "MIT",
   "dependencies": {
     "base32-encode": "^2.0.0",
     "dotenv": "^16.5.0"
-  }
+  },
+  "files": [
+    "entrust-totp.js",
+    "index.html",
+    "app.js",
+    "README.md",
+    "env.example.txt"
+  ]
 }
