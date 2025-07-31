@@ -1,12 +1,20 @@
 {
-  "name": "tokyo-tech-portal-tools",
-  "version": "0.0.1",
-  "description": "Entrust IdentityGuard の OTP シークレットを使用して、TOTP（Time-based One-Time Password）形式の otpauth URI を生成する",
-  "main": "generate-otpauth-uri.js",
+  "name": "entrust-totp-generator",
+  "version": "1.0.0",
+  "description": "Entrust IdentityGuard のソフトトークンから TOTP（Time-based One-Time Password）認証URIを生成するツール",
+  "main": "entrust-totp.js",
   "type": "module",
   "scripts": {
+    "start": "node entrust-totp.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "totp",
+    "entrust",
+    "otp",
+    "2fa",
+    "authentication"
+  ],
   "author": "yas-ako",
   "license": "MIT",
   "dependencies": {
