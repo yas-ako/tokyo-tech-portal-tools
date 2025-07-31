@@ -307,21 +307,27 @@ function showQRCode(uri) {
   const canvas = document.getElementById('qrCanvas');
 
   // QRコードを生成
-  QRCode.toCanvas(canvas, uri, {
-    width: 256,
-    margin: 2,
-    color: {
-      dark: '#000000',
-      light: '#ffffff'
-    }
-  }, (error) => {
-    if (error) {
-      console.error('QRコード生成エラー:', error);
-      alert('QRコードの生成に失敗しました。');
-    } else {
-      qrCodeSection.style.display = 'block';
-    }
-  });
+  const qrCodeDivId = 'qrCanvas';
+  // 既存のQRコードをクリア
+  const qrCanvas = document.getElementById(qrCodeDivId);
+  if (qrCanvas) {
+    qrCanvas.innerHTML = '';
+  }
+  try {
+    // QRCodejsはcanvasではなくdiv要素に描画する
+    new QRCode(qrCodeDivId, {
+      text: uri,
+      width: 256,
+      height: 256,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    qrCodeSection.style.display = 'block';
+  } catch (error) {
+    console.error('QRコード生成エラー:', error);
+    alert('QRコードの生成に失敗しました。');
+  }
 }
 
 /**

@@ -299,7 +299,7 @@
         <div class="qr-code" id="qrCode" style="display: none;">
           <h4>QRコード</h4>
           <p>スマートフォンのTOTPアプリでこのQRコードをスキャンしてください</p>
-          <canvas id="qrCanvas"></canvas>
+          <div id="qrCanvas"></div>
         </div>
       </div>
 
@@ -321,10 +321,9 @@
   </div>
 
   <!-- QRコード生成ライブラリ -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <!-- メインスクリプト -->
-  <script type="module" src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 
 </html>
