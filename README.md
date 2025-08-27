@@ -2,6 +2,9 @@
 
 Entrust IdentityGuardのソフトトークンから、Google AuthenticatorやAuthy等で使用可能なTOTP（Time-based One-Time Password）認証URIを生成するツールです。
 
+> [!NOTE]
+> このツールはLLMが作成したものです
+
 ## 特徴
 
 - Entrust IdentityGuardの公式仕様に準拠
