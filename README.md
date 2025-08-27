@@ -11,7 +11,6 @@ Entrust IdentityGuardのソフトトークンから、Google AuthenticatorやAut
 - PBKDF2キー導出関数を使用したセキュアな実装
 - **Webブラウザ版**と**コマンドライン版**の両方を提供
 - すべての処理がクライアントサイドで実行（Webブラウザ版）
-- Google Authenticator、Authy等の主要TOTPアプリで動作確認済み
 
 ## 使用方法
 
